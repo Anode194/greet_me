@@ -46,7 +46,7 @@ struct todo {
     urgent: Vec<String>,
     non_urgent: Vec<String>
 }
-impl todos {
+impl todo  {
     fn new() -> todo {
         todo { urgent: Vec::new(), non_urgent: Vec::new()}
     }
