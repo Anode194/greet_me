@@ -26,11 +26,11 @@ pub fn output(todo: TodoData) {
 
 }
 pub fn read_text_and_parse() -> TodoData {
-    let mac_todo_filename = "/Users/anode/.config/greet_me/todo.txt";
-    let _linux_todo_filename = "/home/anode/.config/greet_me/todo.txt"; 
+    let _mac_todo_filename = "/Users/anode/.config/greet_me/todo.txt";
+    let linux_todo_filename = "/home/anode/.config/greet_me/todo.txt"; 
 
     //replace with linux when on linux til config file function is built.
-    let todo_file = File::open(mac_todo_filename).unwrap();
+    let todo_file = File::open(linux_todo_filename).unwrap();
     let reader = BufReader::new(todo_file);
 
     let mut todo_text = Vec::new();
@@ -47,8 +47,10 @@ pub fn read_text_and_parse() -> TodoData {
         todo_string.push_str(s.trim_start_matches("[ ] ").trim());
         todo_string.push_str(" ");
         match todo_string.chars().nth(1) {
-            Some('U') => todos.urgent.push(todo_string),
-            Some(_) => todos.non_urgent.push(todo_string),
+            Some('U') => todos.urgent.push(todo_string
+                .to_uppercase()
+                .replace("_"," ")),
+            Some(_) => todos.non_urgent.push(todo_string.replace("_"," ")),
             None => println!("an error occured with parsing the todo file"),
         }
     }
