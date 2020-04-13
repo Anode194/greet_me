@@ -1,9 +1,12 @@
+extern crate clicolors_control;
+
 use std::process::Command;
 use std::vec::Vec;
 use crossterm::style::*;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
+use rand::prelude::*;
 pub struct TodoData {
     pub urgent: Vec<String>,
     pub non_urgent: Vec<String>
@@ -13,15 +16,78 @@ impl TodoData {
         TodoData { urgent: Vec::new(), non_urgent: Vec::new()}
     }
 }
-
-pub fn output(todo: TodoData) {
-    for element in todo.urgent.iter() {
-        print!("{}\t",element);
+impl TodoData {
+    pub fn clean_output(&mut self) -> &mut TodoData {
+        for el in self.urgent.iter_mut() {
+            let temp_string = String::from(el.trim_start_matches(" U ").to_string());
+            el.clear();
+            el.push_str(temp_string.as_str());
+        }
+        self
     }
-        println!(" ");
-        println!(" ");
-    for element in todo.non_urgent.iter() {
-        print!("{}\t",element);
+}
+pub fn ascii_border() {
+    let mut rng = rand::thread_rng();
+    let x = rng.gen_range(0,100);
+    match x {
+        0..=20=> {
+            println!("\t\t\t|\x1b[96m  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-. \x1b[0m");
+            println!("\t\t\t|\x1b[96m =`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'=\x1b[0m");
+            println!("\t\t\t|\x1b[96m    \"      \"      \"      \"      \"      \"      \"      \"      \"      \"      \"      \"      \"      \"      \"\x1b[0m");
+        },
+        21..=40=> {
+            println!("\t\t\t|\x1b[96m_________________ O/_________________________________________________________________________________________\x1b[0m");
+            println!("\t\t\t|\x1b[96m                  0\\ \x1b[0m");
+        },
+        41..=60 => {
+            print!("\t\t\t|\x1b[96m .--.      .-'.      .--.      .--.      .--.      .--.      .`-.      .--.\x1b[0m");
+            println!("\x1b[96m .--.      .-'.      .--.      .--.      .--.      .--.      .`-.      .--.\x1b[0m");
+            print!("\t\t\t|\x1b[96m\\:::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\x1b[0m");
+            println!("\x1b[96m\\:::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\x1b[0m");
+            print!("\t\t\t|\x1b[96m'      `--'      `.-'      `--'      `--'      `--'      `-.'      `--'      `\x1b[0m");
+            println!("\x1b[96m'      `--'      `.-'      `--'      `--'      `--'      `-.'      `--'      `\x1b[0m");
+        }
+        61..=70 => {
+            print!("\t\t\t|\x1b[96m+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\x1b[0m");
+            println!("\x1b[96m+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\x1b[0m");
+        }
+        _ => {
+            print!("\t\t\t|\x1b[96m <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>\x1b[0m");
+            println!("\x1b[96m<<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>\x1b[0m");
+
+        }
+    }
+}
+
+pub fn output(mut todo: TodoData) {
+    todo.clean_output();
+    if clicolors_control::colors_enabled() {
+            print!("\t\t\t|  ");
+            println!("\x1b[36mwelcome Jo here is your todo_list.\x1b[0m");
+            self::ascii_border();
+            println!("\t\t\t|  \x1b[31;48;100mURGENTS\t\x1b[0m",);
+            println!("\t\t\t|  ");
+            print!("\t\t\t|  ");
+        for element in todo.urgent.iter() {
+            print!("\x1b[31;48;100m{}\t\x1b[0m",element);
+        }
+            println!(" ");
+            println!("\t\t\t|");
+        let mut x = 0; 
+            print!("\t\t\t|");
+            println!("\x1b[33m  non urgents\t\x1b[0m",);
+            println!("\t\t\t|  ");
+            print!("\t\t\t|");
+        for element in todo.non_urgent.iter() {
+            
+            print!("\x1b[33m{}\x1b[0m",element);
+            x+=1;
+            if x == 4 {
+                println!(" ");
+                print!("\t\t\t|  ");
+                x = 0; 
+            }
+        }
     }
 
 }
@@ -53,6 +119,7 @@ pub fn read_text_and_parse() -> TodoData {
             Some(_) => todos.non_urgent.push(todo_string.replace("_"," ")),
             None => println!("an error occured with parsing the todo file"),
         }
+        //this removes the " U " from the strings.
     }
         todos
 }

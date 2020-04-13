@@ -8,3 +8,5 @@ edition = "2018"
 
 [dependencies]
 crossterm = "0.17"
+clicolors-control = "1.0.1"
+rand = "0.7"
