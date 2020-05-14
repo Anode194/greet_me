@@ -2,11 +2,21 @@ extern crate clicolors_control;
 
 use std::process::Command;
 use std::vec::Vec;
-use crossterm::style::*;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
 use rand::prelude::*;
+use json::*;
+
+pub struct Quote {
+    pub quote: String,
+    pub author: String
+}
+impl Quote {
+    pub fn new () -> Quote {
+        Quote { quote: String::new(), author: String::new()}
+    }
+}
 pub struct TodoData {
     pub urgent: Vec<String>,
     pub non_urgent: Vec<String>
@@ -88,15 +98,47 @@ pub fn output(mut todo: TodoData) {
                 x = 0; 
             }
         }
+            println!(" ");
+            println!("\t\t\t|  ");
+            print!("\t\t\t|  ");
+            let quote = read_json_quote("/Users/anode/.config/greet_me/quotes.json".to_string());
+            println!("\x1b[33m{} {}\x1b[0m",quote.quote,quote.author);
     }
 
 }
+pub fn read_json_quote(quote_file: String) -> Quote {
+    let quote_file=File::open(quote_file).unwrap();
+    let reader = BufReader::new(quote_file);
+    let mut json_string: String = " ".to_string();
+    for (_index, line) in reader.lines().enumerate() {
+        let line = line.unwrap();
+        json_string.push_str(line.as_str());
+    }
+    let mut return_quote = Quote::new();
+    let mut obj:JsonValue = json::parse(json_string.as_str()).unwrap();
+    let mut json_obj = json::JsonValue::new_object();
+    if obj.is_array() {
+        json_obj = obj.pop();
+        match json_obj {
+            json::JsonValue::Object(mut Object) => {
+               return_quote.quote =  Object.remove("quote").unwrap().dump();
+               return_quote.author = Object.remove("author").unwrap().dump();
+               return_quote.author.truncate(return_quote.author.len() -2);
+               return_quote.author = return_quote.author.replace('"'," ").to_string();
+            }
+            _ => {}
+        }
+    } else { 
+        println!("false");
+    }
+    return_quote
+}
 pub fn read_text_and_parse() -> TodoData {
-    let _mac_todo_filename = "/Users/anode/.config/greet_me/todo.txt";
-    let linux_todo_filename = "/home/anode/.config/greet_me/todo.txt"; 
+    let mac_todo_filename = "/Users/anode/.config/greet_me/todo.txt";
+    let _linux_todo_filename = "/home/anode/.config/greet_me/todo.txt"; 
 
     //replace with linux when on linux til config file function is built.
-    let todo_file = File::open(linux_todo_filename).unwrap();
+    let todo_file = File::open(mac_todo_filename).unwrap();
     let reader = BufReader::new(todo_file);
 
     let mut todo_text = Vec::new();
@@ -144,5 +186,5 @@ pub fn joplin_setup() {
         .arg(joplin_setup2)
         .output()
         .expect("something went wrong");
-
 }
+
