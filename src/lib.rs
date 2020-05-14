@@ -73,7 +73,7 @@ pub fn output(mut todo: TodoData) {
     todo.clean_output();
     if clicolors_control::colors_enabled() {
             print!("\t\t\t|  ");
-            println!("\x1b[36mwelcome Jo here is your todo_list.\x1b[0m");
+            println!("\x1b[36;4;1mwelcome Jo here is your todo_list.\x1b[0m");
             self::ascii_border();
             println!("\t\t\t|  \x1b[31;48;100mURGENTS\t\x1b[0m",);
             println!("\t\t\t|  ");
@@ -102,7 +102,7 @@ pub fn output(mut todo: TodoData) {
             println!("\t\t\t|  ");
             print!("\t\t\t|  ");
             let quote = read_json_quote("/Users/anode/.config/greet_me/quotes.json".to_string());
-            println!("\x1b[33m{} {}\x1b[0m",quote.quote,quote.author);
+            println!("\x1b[34;52;4m{} {}\x1b[0m",quote.quote,quote.author);
     }
 
 }
@@ -120,9 +120,9 @@ pub fn read_json_quote(quote_file: String) -> Quote {
     if obj.is_array() {
         json_obj = obj.pop();
         match json_obj {
-            json::JsonValue::Object(mut Object) => {
-               return_quote.quote =  Object.remove("quote").unwrap().dump();
-               return_quote.author = Object.remove("author").unwrap().dump();
+            json::JsonValue::Object(mut object) => {
+               return_quote.quote =  object.remove("quote").unwrap().dump();
+               return_quote.author = object.remove("author").unwrap().dump();
                return_quote.author.truncate(return_quote.author.len() -2);
                return_quote.author = return_quote.author.replace('"'," ").to_string();
             }
