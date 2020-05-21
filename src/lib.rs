@@ -1,10 +1,11 @@
 extern crate clicolors_control;
-
+extern crate dirs;
 use std::process::Command;
 use std::vec::Vec;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
+use std::path::PathBuf;
 use rand::prelude::*;
 use json::*;
 
@@ -101,13 +102,16 @@ pub fn output(mut todo: TodoData) {
             println!(" ");
             println!("\t\t\t|  ");
             print!("\t\t\t|  ");
-            let quote = read_json_quote("/Users/anode/.config/greet_me/quotes.json".to_string());
+            let quote = read_json_quote();
             println!("\x1b[34;52;4m{} {}\x1b[0m",quote.quote,quote.author);
     }
 
 }
-pub fn read_json_quote(quote_file: String) -> Quote {
-    let quote_file=File::open(quote_file).unwrap();
+#[allow(unused_assignments)]
+pub fn read_json_quote() -> Quote {
+    let mut path:PathBuf = dirs::home_dir().unwrap();
+    path.push(".config/greet_me/quotes.json");
+    let quote_file=File::open(path).unwrap();
     let reader = BufReader::new(quote_file);
     let mut json_string: String = " ".to_string();
     for (_index, line) in reader.lines().enumerate() {
@@ -123,7 +127,7 @@ pub fn read_json_quote(quote_file: String) -> Quote {
             json::JsonValue::Object(mut object) => {
                return_quote.quote =  object.remove("quote").unwrap().dump();
                return_quote.author = object.remove("author").unwrap().dump();
-               return_quote.author.truncate(return_quote.author.len() -2);
+               return_quote.author.truncate(return_quote.author.len() -1);
                return_quote.author = return_quote.author.replace('"'," ").to_string();
             }
             _ => {}
@@ -134,11 +138,10 @@ pub fn read_json_quote(quote_file: String) -> Quote {
     return_quote
 }
 pub fn read_text_and_parse() -> TodoData {
-    let mac_todo_filename = "/Users/anode/.config/greet_me/todo.txt";
-    let _linux_todo_filename = "/home/anode/.config/greet_me/todo.txt"; 
+    let mut todo_filename = dirs::home_dir().unwrap();
+    todo_filename.push(".config/greet_me/todo.txt"); 
 
-    //replace with linux when on linux til config file function is built.
-    let todo_file = File::open(mac_todo_filename).unwrap();
+    let todo_file = File::open(todo_filename).unwrap();
     let reader = BufReader::new(todo_file);
 
     let mut todo_text = Vec::new();
