@@ -46,7 +46,7 @@ impl TodoData {
 }
 pub fn ascii_border() {
     let mut rng = rand::thread_rng();
-    let x = 91; //rng.gen_range(0,100);
+    let x = rng.gen_range(0,100);
     match x {
         0..=20 => {
             let term_construct = termion::terminal_size().unwrap();
@@ -70,7 +70,7 @@ pub fn ascii_border() {
             println!("");
         }
         21..=40 => {
-            println!("\t\t\t|\x1b[96m_________________ O/_________________________________________________________________________________________\x1b[0m");
+            println!("\t\t\t|\x1b[96m_________________ O/________________________________________________________________________\x1b[0m");
             println!("\t\t\t|\x1b[96m                  0\\ \x1b[0m");
         }
         41..=60 => {
@@ -127,7 +127,7 @@ pub fn ascii_border() {
         91..=100 => {
             let term_construct = termion::terminal_size().unwrap();
             let mut term_size = term_construct.0;
-            term_size = term_size / 10;
+            term_size = term_size / 5;
             print!("\t\t\t|");
             for _x in 0..term_size {
                 print!("\x1b[96m * *\x1b[0m");
