@@ -1,30 +1,37 @@
 extern crate clicolors_control;
 extern crate dirs;
-use std::process::Command;
-use std::vec::Vec;
+extern crate termion;
+use json::*;
+use rand::prelude::*;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::path::PathBuf;
-use rand::prelude::*;
-use json::*;
+use std::process::Command;
+use std::vec::Vec;
 
 pub struct Quote {
     pub quote: String,
-    pub author: String
+    pub author: String,
 }
 impl Quote {
-    pub fn new () -> Quote {
-        Quote { quote: String::new(), author: String::new()}
+    pub fn new() -> Quote {
+        Quote {
+            quote: String::new(),
+            author: String::new(),
+        }
     }
 }
 pub struct TodoData {
     pub urgent: Vec<String>,
-    pub non_urgent: Vec<String>
+    pub non_urgent: Vec<String>,
 }
 impl TodoData {
     pub fn new() -> TodoData {
-        TodoData { urgent: Vec::new(), non_urgent: Vec::new()}
+        TodoData {
+            urgent: Vec::new(),
+            non_urgent: Vec::new(),
+        }
     }
 }
 impl TodoData {
@@ -39,33 +46,103 @@ impl TodoData {
 }
 pub fn ascii_border() {
     let mut rng = rand::thread_rng();
-    let x = rng.gen_range(0,100);
+    let x = 91; //rng.gen_range(0,100);
     match x {
-        0..=20=> {
-            println!("\t\t\t|\x1b[96m  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-.  .-.-. \x1b[0m");
-            println!("\t\t\t|\x1b[96m =`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'==`. .'=\x1b[0m");
-            println!("\t\t\t|\x1b[96m    \"      \"      \"      \"      \"      \"      \"      \"      \"      \"      \"      \"      \"      \"      \"\x1b[0m");
-        },
-        21..=40=> {
+        0..=20 => {
+            let term_construct = termion::terminal_size().unwrap();
+            let mut term_size = term_construct.0;
+            term_size = term_size / 10;
+            println!("{}", term_size);
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m  .-.-. \x1b[0m");
+            }
+            println!("");
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m =`. .'=\x1b[0m");
+            }
+            println!("");
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m    \"   \x1b[0m");
+            }
+            println!("");
+        }
+        21..=40 => {
             println!("\t\t\t|\x1b[96m_________________ O/_________________________________________________________________________________________\x1b[0m");
             println!("\t\t\t|\x1b[96m                  0\\ \x1b[0m");
-        },
-        41..=60 => {
-            print!("\t\t\t|\x1b[96m .--.      .-'.      .--.      .--.      .--.      .--.      .`-.      .--.\x1b[0m");
-            println!("\x1b[96m .--.      .-'.      .--.      .--.      .--.      .--.      .`-.      .--.\x1b[0m");
-            print!("\t\t\t|\x1b[96m\\:::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\x1b[0m");
-            println!("\x1b[96m\\:::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\\::::::::.\x1b[0m");
-            print!("\t\t\t|\x1b[96m'      `--'      `.-'      `--'      `--'      `--'      `-.'      `--'      `\x1b[0m");
-            println!("\x1b[96m'      `--'      `.-'      `--'      `--'      `--'      `-.'      `--'      `\x1b[0m");
         }
+        41..=60 => {
+            let term_construct = termion::terminal_size().unwrap();
+            let mut term_size = term_construct.0;
+            term_size = term_size / 30;
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m  .--.       .-'.    \x1b[0m");
+            }
+                println!("");
+                print!("\t\t\t|");
+                for _x in 0..term_size {
+                    print!("\x1b[96m:::::.\\:::::::::\\::::\x1b[0m");
+                }
+                println!("");
+                print!("\t\t\t|");
+                for _x in 0..term_size {
+                    print!("\x1b[96m       `--'      `.-'\x1b[0m");
+                }
+                println!("");
+            }
         61..=70 => {
-            print!("\t\t\t|\x1b[96m+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\x1b[0m");
-            println!("\x1b[96m+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\x1b[0m");
+            let term_construct = termion::terminal_size().unwrap();
+            let mut term_size = term_construct.0;
+            term_size = term_size / 10;
+
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m+-+-+-\x1b[0m");
+            }
+            println!("");
+        }
+        71..=90 => {
+            let term_construct = termion::terminal_size().unwrap();
+            let mut term_size = term_construct.0;
+            term_size = term_size / 10;
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m___  ___\x1b[0m");
+            }
+            println!("");
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m __)(__ \x1b[0m");
+            }
+            println!("");
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m(______)\x1b[0m");
+            }
+            println!("");
+        }
+        91..=100 => {
+            let term_construct = termion::terminal_size().unwrap();
+            let mut term_size = term_construct.0;
+            term_size = term_size / 10;
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m * *\x1b[0m");
+            }
+            println!("");
         }
         _ => {
-            print!("\t\t\t|\x1b[96m <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>\x1b[0m");
-            println!("\x1b[96m<<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>\x1b[0m");
-
+            let term_construct = termion::terminal_size().unwrap();
+            let mut term_size = term_construct.0;
+            term_size = term_size / 10;
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m<<>><<>>\x1b[0m");
+            }
+            println!("");
         }
     }
 }
@@ -73,45 +150,43 @@ pub fn ascii_border() {
 pub fn output(mut todo: TodoData) {
     todo.clean_output();
     if clicolors_control::colors_enabled() {
-            print!("\t\t\t|  ");
-            println!("\x1b[36;4;1mwelcome Jo here is your todo_list.\x1b[0m");
-            self::ascii_border();
-            println!("\t\t\t|  \x1b[31;48;100mURGENTS\t\x1b[0m",);
-            println!("\t\t\t|  ");
-            print!("\t\t\t|  ");
+        print!("\t\t\t|  ");
+        println!("\x1b[36;4;1mwelcome Jo here is your todo_list.\x1b[0m");
+        self::ascii_border();
+        println!("\t\t\t|  \x1b[31;48;100mURGENTS\t\x1b[0m",);
+        println!("\t\t\t|  ");
+        print!("\t\t\t|  ");
         for element in todo.urgent.iter() {
-            print!("\x1b[31;48;100m{}\t\x1b[0m",element);
+            print!("\x1b[31;48;100m{}\t\x1b[0m", element);
         }
-            println!(" ");
-            println!("\t\t\t|");
-        let mut x = 0; 
-            print!("\t\t\t|");
-            println!("\x1b[33m  non urgents\t\x1b[0m",);
-            println!("\t\t\t|  ");
-            print!("\t\t\t|");
+        println!(" ");
+        println!("\t\t\t|");
+        let mut x = 0;
+        print!("\t\t\t|");
+        println!("\x1b[33m  non urgents\t\x1b[0m",);
+        println!("\t\t\t|  ");
+        print!("\t\t\t|  ");
         for element in todo.non_urgent.iter() {
-            
-            print!("\x1b[33m{}\x1b[0m",element);
-            x+=1;
+            print!("\x1b[33m{}\x1b[0m", element);
+            x += 1;
             if x == 4 {
                 println!(" ");
                 print!("\t\t\t|  ");
-                x = 0; 
+                x = 0;
             }
         }
-            println!(" ");
-            println!("\t\t\t|  ");
-            print!("\t\t\t|  ");
-            let quote = read_json_quote();
-            println!("\x1b[34;52;4m{} {}\x1b[0m",quote.quote,quote.author);
+        println!(" ");
+        println!("\t\t\t|  ");
+        print!("\t\t\t|  ");
+        let quote = read_json_quote();
+        println!("\x1b[34;52;4m{} {}\x1b[0m", quote.quote, quote.author);
     }
-
 }
 #[allow(unused_assignments)]
 pub fn read_json_quote() -> Quote {
-    let mut path:PathBuf = dirs::home_dir().unwrap();
+    let mut path: PathBuf = dirs::home_dir().unwrap();
     path.push(".config/greet_me/quotes.json");
-    let quote_file=File::open(path).unwrap();
+    let quote_file = File::open(path).unwrap();
     let reader = BufReader::new(quote_file);
     let mut json_string: String = " ".to_string();
     for (_index, line) in reader.lines().enumerate() {
@@ -119,75 +194,77 @@ pub fn read_json_quote() -> Quote {
         json_string.push_str(line.as_str());
     }
     let mut return_quote = Quote::new();
-    let mut obj:JsonValue = json::parse(json_string.as_str()).unwrap();
+    let mut obj: JsonValue = json::parse(json_string.as_str()).unwrap();
     let mut json_obj = json::JsonValue::new_object();
     if obj.is_array() {
         json_obj = obj.pop();
         match json_obj {
             json::JsonValue::Object(mut object) => {
-               return_quote.quote =  object.remove("quote").unwrap().dump();
-               return_quote.author = object.remove("author").unwrap().dump();
-               return_quote.author.truncate(return_quote.author.len() -1);
-               return_quote.author = return_quote.author.replace('"'," ").to_string();
+                return_quote.quote = object.remove("quote").unwrap().dump();
+                return_quote.author = object.remove("author").unwrap().dump();
+                return_quote.author.truncate(return_quote.author.len() - 1);
+                return_quote.author = return_quote.author.replace('"', " ").to_string();
             }
             _ => {}
         }
-    } else { 
+    } else {
         println!("false");
     }
     return_quote
 }
 pub fn read_text_and_parse() -> TodoData {
     let mut todo_filename = dirs::home_dir().unwrap();
-    todo_filename.push(".config/greet_me/todo.txt"); 
+    todo_filename.push(".config/greet_me/todo.txt");
 
     let todo_file = File::open(todo_filename).unwrap();
     let reader = BufReader::new(todo_file);
 
     let mut todo_text = Vec::new();
     let mut todos = TodoData::new();
-    
+
     for (_index, line) in reader.lines().enumerate() {
         let line = line.unwrap();
         todo_text.push(line);
     }
-        for el in todo_text.iter() {
+    for el in todo_text.iter() {
         let mut todo_string = " ".to_string();
-        if el.chars().nth(1) == Some('X') { break;}
+        if el.chars().nth(1) == Some('X') {
+            break;
+        }
         let s = el.clone();
         todo_string.push_str(s.trim_start_matches("[ ] ").trim());
         todo_string.push_str(" ");
         match todo_string.chars().nth(1) {
-            Some('U') => todos.urgent.push(todo_string
-                .to_uppercase()
-                .replace("_"," ")),
-            Some(_) => todos.non_urgent.push(todo_string.replace("_"," ")),
+            Some('U') => todos
+                .urgent
+                .push(todo_string.to_uppercase().replace("_", " ")),
+            Some(_) => todos.non_urgent.push(todo_string.replace("_", " ")),
             None => println!("an error occured with parsing the todo file"),
         }
         //this removes the " U " from the strings.
     }
-        todos
+    todos
 }
 
-/* two data structures: urgent todos and not-urgent todos. urgent todo's have U_ 
-  in front of their name. urgents if they are below 5 are all printed to the 
+/* two data structures: urgent todos and not-urgent todos. urgent todo's have U_
+  in front of their name. urgents if they are below 5 are all printed to the
     screen. if you pass in a command line argument you will get a total list of all todo's.
-*/ 
+*/
 pub fn joplin_setup() {
-
     let joplin_setup = "joplin use TODO";
     let joplin_setup2 = "joplin ls > $HOME/.config/greet_me/todo.txt";
 
     let mut setup_1 = Command::new("sh");
-    setup_1.arg("-c")
+    setup_1
+        .arg("-c")
         .arg(joplin_setup)
         .output()
         .expect("something went wrong");
 
     let mut setup_2 = Command::new("sh");
-    setup_2.arg("-c")
+    setup_2
+        .arg("-c")
         .arg(joplin_setup2)
         .output()
         .expect("something went wrong");
 }
-
