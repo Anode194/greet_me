@@ -44,6 +44,7 @@ impl TodoData {
         self
     }
 }
+
 pub fn ascii_border() {
     let mut rng = rand::thread_rng();
     let x = rng.gen_range(0,100);
@@ -52,7 +53,6 @@ pub fn ascii_border() {
             let term_construct = termion::terminal_size().unwrap();
             let mut term_size = term_construct.0;
             term_size = term_size / 10;
-            println!("{}", term_size);
             print!("\t\t\t|");
             for _x in 0..term_size {
                 print!("\x1b[96m  .-.-. \x1b[0m");
@@ -167,7 +167,7 @@ pub fn output(mut todo: TodoData) {
         println!("\t\t\t|  ");
         print!("\t\t\t|  ");
         for element in todo.non_urgent.iter() {
-            print!("\x1b[33m{}\x1b[0m", element);
+            print!("\x1b[33m{}\x1b[0m|", element);
             x += 1;
             if x == 4 {
                 println!(" ");
