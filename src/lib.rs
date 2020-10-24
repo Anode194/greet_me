@@ -1,8 +1,7 @@
 extern crate clicolors_control;
 extern crate dirs;
-extern crate termion;
+mod output;
 use json::*;
-use rand::prelude::*;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -22,137 +21,13 @@ impl Quote {
         }
     }
 }
-pub struct TodoData {
-    pub urgent: Vec<String>,
-    pub non_urgent: Vec<String>,
-}
-impl TodoData {
-    pub fn new() -> TodoData {
-        TodoData {
-            urgent: Vec::new(),
-            non_urgent: Vec::new(),
-        }
-    }
-}
-impl TodoData {
-    pub fn clean_output(&mut self) -> &mut TodoData {
-        for el in self.urgent.iter_mut() {
-            let temp_string = String::from(el.trim_start_matches(" U ").to_string());
-            el.clear();
-            el.push_str(temp_string.as_str());
-        }
-        self
-    }
-}
-
-pub fn ascii_border() {
-    let mut rng = rand::thread_rng();
-    let x = rng.gen_range(0,100);
-    match x {
-        0..=20 => {
-            let term_construct = termion::terminal_size().unwrap();
-            let mut term_size = term_construct.0;
-            term_size = term_size / 10;
-            print!("\t\t\t|");
-            for _x in 0..term_size {
-                print!("\x1b[96m  .-.-. \x1b[0m");
-            }
-            println!("");
-            print!("\t\t\t|");
-            for _x in 0..term_size {
-                print!("\x1b[96m =`. .'=\x1b[0m");
-            }
-            println!("");
-            print!("\t\t\t|");
-            for _x in 0..term_size {
-                print!("\x1b[96m    \"   \x1b[0m");
-            }
-            println!("");
-        }
-        21..=40 => {
-            println!("\t\t\t|\x1b[96m_________________ O/________________________________________________________________________\x1b[0m");
-            println!("\t\t\t|\x1b[96m                  0\\ \x1b[0m");
-        }
-        41..=60 => {
-            let term_construct = termion::terminal_size().unwrap();
-            let mut term_size = term_construct.0;
-            term_size = term_size / 30;
-            print!("\t\t\t|");
-            for _x in 0..term_size {
-                print!("\x1b[96m  .--.       .-'.    \x1b[0m");
-            }
-                println!("");
-                print!("\t\t\t|");
-                for _x in 0..term_size {
-                    print!("\x1b[96m:::::.\\:::::::::\\::::\x1b[0m");
-                }
-                println!("");
-                print!("\t\t\t|");
-                for _x in 0..term_size {
-                    print!("\x1b[96m       `--'      `.-'\x1b[0m");
-                }
-                println!("");
-            }
-        61..=70 => {
-            let term_construct = termion::terminal_size().unwrap();
-            let mut term_size = term_construct.0;
-            term_size = term_size / 10;
-
-            print!("\t\t\t|");
-            for _x in 0..term_size {
-                print!("\x1b[96m+-+-+-\x1b[0m");
-            }
-            println!("");
-        }
-        71..=90 => {
-            let term_construct = termion::terminal_size().unwrap();
-            let mut term_size = term_construct.0;
-            term_size = term_size / 10;
-            print!("\t\t\t|");
-            for _x in 0..term_size {
-                print!("\x1b[96m___  ___\x1b[0m");
-            }
-            println!("");
-            print!("\t\t\t|");
-            for _x in 0..term_size {
-                print!("\x1b[96m __)(__ \x1b[0m");
-            }
-            println!("");
-            print!("\t\t\t|");
-            for _x in 0..term_size {
-                print!("\x1b[96m(______)\x1b[0m");
-            }
-            println!("");
-        }
-        91..=100 => {
-            let term_construct = termion::terminal_size().unwrap();
-            let mut term_size = term_construct.0;
-            term_size = term_size / 5;
-            print!("\t\t\t|");
-            for _x in 0..term_size {
-                print!("\x1b[96m * *\x1b[0m");
-            }
-            println!("");
-        }
-        _ => {
-            let term_construct = termion::terminal_size().unwrap();
-            let mut term_size = term_construct.0;
-            term_size = term_size / 10;
-            print!("\t\t\t|");
-            for _x in 0..term_size {
-                print!("\x1b[96m<<>><<>>\x1b[0m");
-            }
-            println!("");
-        }
-    }
-}
 
 pub fn output(mut todo: TodoData) {
     todo.clean_output();
     if clicolors_control::colors_enabled() {
         print!("\t\t\t|  ");
         println!("\x1b[36;4;1mwelcome Jo here is your todo_list.\x1b[0m");
-        self::ascii_border();
+        output::ascii_border();
         println!("\t\t\t|  \x1b[31;48;100mURGENTS\t\x1b[0m",);
         println!("\t\t\t|  ");
         print!("\t\t\t|  ");
