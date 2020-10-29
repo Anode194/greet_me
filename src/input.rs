@@ -1,10 +1,12 @@
 extern crate clicolors_control;
 extern crate dirs;
+use crate::data::TodoData;
 use std::fs::File;
+use std::fs::OpenOptions;
 use std::io::BufRead;
 use std::io::BufReader;
+use std::path::PathBuf;
 use std::process::Command;
-use crate::data::TodoData;
 use std::vec::Vec;
 
 pub fn read_text_and_parse() -> TodoData {
@@ -62,4 +64,26 @@ pub fn joplin_setup() {
         .arg(joplin_setup2)
         .output()
         .expect("something went wrong");
+}
+pub fn read_alt_format(mut file_name: &str) -> TodoData {
+    let todo_file = match OpenOptions::new().read(true).write(true).open(file_name) {
+        Ok(x) => x,
+        Err(e) => panic!("couldn't open output file was it misspelled? {:?}", e),
+    };
+
+    let mut todos = TodoData::new();
+    let reader = BufReader::new(todo_file);
+
+    for line in reader.lines().enumerate() {
+        if line.0 > 1 {
+            let mut text = line.1.unwrap();
+            if text.char_indices().next().unwrap().1 != ';' {
+                todos.urgent.append(text);
+            } else {
+                break;
+            }
+        }
+    }
+
+    TodoData::new()
 }
