@@ -1,3 +1,4 @@
+mod data;
 extern crate termion;
 use rand::prelude::*;
 use crate::TodoData;
