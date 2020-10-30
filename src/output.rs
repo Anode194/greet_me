@@ -1,7 +1,6 @@
-mod data;
 extern crate termion;
 use rand::prelude::*;
-use crate::TodoData;
+use crate::data::*;
 pub fn ascii_border() { 
     let mut rng = rand::thread_rng();
     let x = rng.gen_range(0,100);
@@ -101,5 +100,40 @@ pub fn ascii_border() {
             }
             println!("");
         }
+    }
+}
+pub fn output(mut todo: TodoData) {
+    todo.clean_output();
+    if clicolors_control::colors_enabled() {
+        print!("\t\t\t|  ");
+        println!("\x1b[36;4;1mwelcome Jo here is your todo_list.\x1b[0m");
+        ascii_border();
+        println!("\t\t\t|  \x1b[31;48;100mURGENTS\t\x1b[0m",);
+        println!("\t\t\t|  ");
+        print!("\t\t\t|  ");
+        for element in todo.urgent.iter() {
+            print!("\x1b[31;48;100m{}\t\x1b[0m", element);
+        }
+        println!(" ");
+        println!("\t\t\t|");
+        let mut x = 0;
+        print!("\t\t\t|");
+        println!("\x1b[33m  non urgents\t\x1b[0m",);
+        println!("\t\t\t|  ");
+        print!("\t\t\t|  ");
+        for element in todo.non_urgent.iter() {
+            print!("\x1b[33m{}\x1b[0m|", element);
+            x += 1;
+            if x == 4 {
+                println!(" ");
+                print!("\t\t\t|  ");
+                x = 0;
+            }
+        }
+        println!(" ");
+        println!("\t\t\t|  ");
+        print!("\t\t\t|  ");
+        let quote = read_json_quote();
+        println!("\x1b[34;52;4m{} {}\x1b[0m", quote.quote, quote.author);
     }
 }
