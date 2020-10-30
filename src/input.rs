@@ -65,25 +65,29 @@ pub fn joplin_setup() {
         .output()
         .expect("something went wrong");
 }
-pub fn read_alt_format(mut file_name: &str) -> TodoData {
+pub fn read_alt_format(file_name: &str) -> TodoData {
     let todo_file = match OpenOptions::new().read(true).write(true).open(file_name) {
         Ok(x) => x,
-        Err(e) => panic!("couldn't open output file was it misspelled? {:?}", e),
+        Err(e) => panic!("couldn't open todo file the -a flag must include a file {:?}", e),
     };
 
     let mut todos = TodoData::new();
     let reader = BufReader::new(todo_file);
 
+    let mut flag = false;
     for line in reader.lines().enumerate() {
-        if line.0 > 1 {
-            let mut text = line.1.unwrap();
-            if text.char_indices().next().unwrap().1 != ';' {
-                todos.urgent.append(text);
-            } else {
-                break;
+        if line.0 > 0 {
+            let text = line.1.unwrap();
+            if text == "non_urgents" {
+                flag = true;
+                continue;
+            } else if flag {
+                todos.non_urgent.push(text);
+            }else {
+                todos.urgent.push(text);
             }
         }
     }
 
-    TodoData::new()
+    todos
 }
