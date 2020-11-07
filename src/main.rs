@@ -16,6 +16,9 @@ fn main() {
                 output::output(output_text)
             }
             "-t" => {}
+            "-q" => {
+                output::quote_output();
+            }
             "-h" | "--help" => {
                 println!(" greet me is a simple todo tracker / greeter");
                 println!("-a 'file name'\t\t for todo lists not tracked with joplin");

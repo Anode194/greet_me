@@ -134,10 +134,13 @@ pub fn output(mut todo: TodoData) {
         println!(" ");
         println!("\t\t\t|  ");
         print!("\t\t\t|  ");
-        let quote = read_json_quote();
-        println!("\x1b[34;52;4m{} {}\x1b[0m", quote.quote, quote.author);
+        quote_output();
     }
 }
 
 pub fn quote_output() {
+    if clicolors_control::colors_enabled() {
+        let quote = read_json_quote();
+        println!("\x1b[34;52;4m{} {}\x1b[0m", quote.quote, quote.author);
+    }
 }
