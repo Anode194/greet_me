@@ -104,9 +104,10 @@ pub fn ascii_border() {
 }
 pub fn output(mut todo: TodoData) {
     todo.clean_output();
+    let greeting = greeting::read();
     if clicolors_control::colors_enabled() {
         print!("\t\t\t|  ");
-        println!("\x1b[36;4;1mwelcome Jo here is your todo_list.\x1b[0m");
+        println!("\x1b[36;4;1m{}\x1b[0m",greeting.text);
         ascii_border();
         println!("\t\t\t|  \x1b[31;48;100mURGENTS\t\x1b[0m",);
         println!("\t\t\t|  ");
@@ -136,4 +137,7 @@ pub fn output(mut todo: TodoData) {
         let quote = read_json_quote();
         println!("\x1b[34;52;4m{} {}\x1b[0m", quote.quote, quote.author);
     }
+}
+
+pub fn quote_output() {
 }

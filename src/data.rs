@@ -1,7 +1,8 @@
 use json::*;
-use std::io::BufRead;
 use std::fs::File;
+use std::io::BufRead;
 use std::io::BufReader;
+use std::io::Read;
 use std::path::PathBuf;
 pub struct TodoData {
     pub urgent: Vec<String>,
@@ -35,6 +36,25 @@ impl Quote {
             quote: String::new(),
             author: String::new(),
         }
+    }
+}
+pub struct greeting {
+    pub text: String,
+}
+impl greeting {
+    pub fn read() -> greeting {
+        let mut path: PathBuf = dirs::home_dir().unwrap();
+        path.push(".config/greet_me/greeting.txt");
+        let mut greeting_file = File::open(path).unwrap();
+        let mut greet = greeting {
+            text: String::new(),
+        };
+        match greeting_file.read_to_string(&mut greet.text) {
+            Ok(i) => i,
+            Err(e) => panic!("something went wrong reading the file. \n{}", e),
+        };
+
+        greet
     }
 }
 
