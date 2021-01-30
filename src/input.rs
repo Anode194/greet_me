@@ -1,10 +1,12 @@
 extern crate clicolors_control;
 extern crate dirs;
 use crate::data::TodoData;
+use crate::data::*;
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::BufRead;
 use std::io::BufReader;
+use std::io::Write;
 use std::path::PathBuf;
 use std::process::Command;
 use std::vec::Vec;
@@ -68,7 +70,10 @@ pub fn joplin_setup() {
 pub fn read_alt_format(file_name: &str) -> TodoData {
     let todo_file = match OpenOptions::new().read(true).write(true).open(file_name) {
         Ok(x) => x,
-        Err(e) => panic!("couldn't open todo file the -a flag must include a file {:?}", e),
+        Err(e) => panic!(
+            "couldn't open todo file the -a flag must include a file {:?}",
+            e
+        ),
     };
 
     let mut todos = TodoData::new();
@@ -83,11 +88,25 @@ pub fn read_alt_format(file_name: &str) -> TodoData {
                 continue;
             } else if flag {
                 todos.non_urgent.push(text);
-            }else {
+            } else {
                 todos.urgent.push(text);
             }
         }
     }
 
     todos
+}
+pub fn save_qoute() {
+    let quote = read_json_quote();
+    let mut path: PathBuf = dirs::home_dir().unwrap();
+    path.push(".config/greet_me/saved_quotes");
+    let mut saved_quotes_file = OpenOptions::new()
+        .read(true)
+        .create(true)
+        .append(true)
+        .open(path)
+        .unwrap();
+    if let Err(e) = writeln!(saved_quotes_file, "{}", quote.quote_str()) {
+        eprintln!("Couldn't save quote to file: {}", e);
+    }
 }
