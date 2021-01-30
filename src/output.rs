@@ -2,7 +2,6 @@ extern crate termion;
 use crate::data::*;
 use rand::prelude::*;
 use std::fs::OpenOptions;
-use std::fs::File;
 use std::io::Read;
 use std::path::PathBuf;
 pub fn ascii_border() {
