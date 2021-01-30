@@ -12,16 +12,25 @@ fn main() {
     if args.len() > 1 {
         match args[1].as_ref() {
             "-a" => {
-                let mut output_text = read_alt_format(&args[2]);
+                let output_text = read_alt_format(&args[2]);
                 output::output(output_text)
             }
-            "-t" => {}
+            "-d" => {
+                output::print_all_quotes();
+            }
+            "-s" => {
+                input::save_qoute();
+                println!("daily quote saved");
+            }
             "-q" => {
                 output::quote_output();
             }
             "-h" | "--help" => {
                 println!(" greet me is a simple todo tracker / greeter");
                 println!("-a 'file name'\t\t for todo lists not tracked with joplin");
+                println!("-s save daily quote. be careful to not save duplicates!");
+                println!("-d print all saved quotes");
+                println!("-q \t\t print the daily quote");
                 println!("-h --help \t\t'prints this help message'");
             }
             _ => {
@@ -31,8 +40,8 @@ fn main() {
             }
         }
     } else {
-                input::joplin_setup();
-                let output_text = read_text_and_parse();
-                output::output(output_text)
+        input::joplin_setup();
+        let output_text = read_text_and_parse();
+        output::output(output_text)
     }
 }
