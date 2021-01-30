@@ -1,9 +1,10 @@
 extern crate termion;
-use rand::prelude::*;
 use crate::data::*;
-pub fn ascii_border() { 
+use rand::prelude::*;
+use std::path::PathBuf;
+pub fn ascii_border() {
     let mut rng = rand::thread_rng();
-    let x = rng.gen_range(0,100);
+    let x = rng.gen_range(0, 100);
     match x {
         0..=20 => {
             let term_construct = termion::terminal_size().unwrap();
@@ -37,18 +38,18 @@ pub fn ascii_border() {
             for _x in 0..term_size {
                 print!("\x1b[96m  .--.       .-'.    \x1b[0m");
             }
-                println!("");
-                print!("\t\t\t|");
-                for _x in 0..term_size {
-                    print!("\x1b[96m:::::.\\:::::::::\\::::\x1b[0m");
-                }
-                println!("");
-                print!("\t\t\t|");
-                for _x in 0..term_size {
-                    print!("\x1b[96m       `--'      `.-'\x1b[0m");
-                }
-                println!("");
+            println!("");
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m:::::.\\:::::::::\\::::\x1b[0m");
             }
+            println!("");
+            print!("\t\t\t|");
+            for _x in 0..term_size {
+                print!("\x1b[96m       `--'      `.-'\x1b[0m");
+            }
+            println!("");
+        }
         61..=70 => {
             let term_construct = termion::terminal_size().unwrap();
             let mut term_size = term_construct.0;
@@ -107,7 +108,7 @@ pub fn output(mut todo: TodoData) {
     let greeting = greeting::read();
     if clicolors_control::colors_enabled() {
         print!("\t\t\t|  ");
-        println!("\x1b[36;4;1m{}\x1b[0m",greeting.text);
+        println!("\x1b[36;4;1m{}\x1b[0m", greeting.text);
         ascii_border();
         println!("\t\t\t|  \x1b[31;48;100mURGENTS\t\x1b[0m",);
         println!("\t\t\t|  ");
@@ -141,6 +142,12 @@ pub fn output(mut todo: TodoData) {
 pub fn quote_output() {
     if clicolors_control::colors_enabled() {
         let quote = read_json_quote();
-        println!("\x1b[34;52;4m{} {}\x1b[0m", quote.quote, quote.author);
+        println!("\x1b[34;52;4m{}\x1b[0m", quote.quote_str());
+    }
+}
+pub fn print_all_quotes() {
+    if clicolors_control::colors_enabled() {
+    let mut path: PathBuf = dirs::home_dir().unwrap();
+    path.push(".config/greet_me/saved_quotes");
     }
 }
