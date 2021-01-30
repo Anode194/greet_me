@@ -37,10 +37,10 @@ impl Quote {
             author: String::new(),
         }
     }
-    pub fn quote_str(&self) -> &str {
-        let mut quote = format!("{} {} ",self.quote, self.author);
+    pub fn quote_str(&self) -> String {
+        let quote = format!("{} {} ",self.quote, self.author);
 
-        quote.as_str()
+        quote
     }
 }
 pub struct Greeting {
