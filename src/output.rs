@@ -1,6 +1,9 @@
 extern crate termion;
 use crate::data::*;
 use rand::prelude::*;
+use std::fs::OpenOptions;
+use std::fs::File;
+use std::io::Read;
 use std::path::PathBuf;
 pub fn ascii_border() {
     let mut rng = rand::thread_rng();
@@ -105,7 +108,7 @@ pub fn ascii_border() {
 }
 pub fn output(mut todo: TodoData) {
     todo.clean_output();
-    let greeting = greeting::read();
+    let greeting = Greeting::read();
     if clicolors_control::colors_enabled() {
         print!("\t\t\t|  ");
         println!("\x1b[36;4;1m{}\x1b[0m", greeting.text);
@@ -147,7 +150,19 @@ pub fn quote_output() {
 }
 pub fn print_all_quotes() {
     if clicolors_control::colors_enabled() {
-    let mut path: PathBuf = dirs::home_dir().unwrap();
-    path.push(".config/greet_me/saved_quotes");
+        let mut path: PathBuf = dirs::home_dir().unwrap();
+        path.push(".config/greet_me/saved_quotes");
+        let mut saved_quotes_file = match OpenOptions::new()
+        .read(true).open(path) {
+            Ok(i) => i,
+            Err(e) => panic!("Couldn't open the saved quotes file. {}",e),
+        };
+        let mut contents = String::new();
+        match saved_quotes_file.read_to_string(&mut contents) {
+            Ok(i) => i,
+            Err(e) => panic!("{}",e)
+        };
+        println!("\x1b[34;52;4m{}\x1b[0m",contents);
+        
     }
 }
