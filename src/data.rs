@@ -43,15 +43,15 @@ impl Quote {
         quote.as_str()
     }
 }
-pub struct greeting {
+pub struct Greeting {
     pub text: String,
 }
-impl greeting {
-    pub fn read() -> greeting {
+impl Greeting {
+    pub fn read() -> Greeting {
         let mut path: PathBuf = dirs::home_dir().unwrap();
         path.push(".config/greet_me/greeting.txt");
         let mut greeting_file = File::open(path).unwrap();
-        let mut greet = greeting {
+        let mut greet = Greeting {
             text: String::new(),
         };
         match greeting_file.read_to_string(&mut greet.text) {
