@@ -22,6 +22,9 @@ fn main() {
                 input::save_qoute();
                 println!("daily quote saved");
             }
+            "-n"|"--new_greeting" => {
+                input::new_greeting();
+            }
             "-q" => {
                 output::quote_output();
             }
@@ -32,6 +35,7 @@ fn main() {
                 println!("-d print all saved quotes");
                 println!("-q \t\t print the daily quote");
                 println!("-h --help \t\t'prints this help message'");
+                println!("-n --help \t\t'change the greeting'");
             }
             _ => {
                 input::joplin_setup();
