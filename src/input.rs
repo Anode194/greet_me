@@ -5,7 +5,6 @@ use crate::data::*;
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::*;
-use std::io;
 use std::path::PathBuf;
 use std::process::Command;
 use std::vec::Vec;
@@ -114,8 +113,23 @@ pub fn record_greeting() -> String {
     println!("type what you would like your greeting to be! ");
     let mut greeting = String::new();
     match stdin().read_line(&mut greeting) {
-        Ok(_greeting) => {},
-        Err(e) => panic!("couldn't capture your greeting, did you type anything? \n{:?}",e),
+        Ok(_greeting) => {}
+        Err(e) => panic!(
+            "couldn't capture your greeting, did you type anything? \n{:?}",
+            e
+        ),
     }
     greeting.trim().to_string()
+}
+pub fn new_greeting() {
+    let mut path: PathBuf = dirs::home_dir().unwrap();
+    path.push(".config/greet_me/greeting.txt");
+
+    let mut greeting_file = OpenOptions::new()
+        .create(true)
+        .write(true)
+        .open(path)
+        .unwrap();
+    greeting_file.write_all(record_greeting().as_bytes()).expect("unable to write new greeeting to a file");
+    println!("greeting saved successfully!");
 }
