@@ -4,9 +4,8 @@ use crate::data::TodoData;
 use crate::data::*;
 use std::fs::File;
 use std::fs::OpenOptions;
-use std::io::BufRead;
-use std::io::BufReader;
-use std::io::Write;
+use std::io::*;
+use std::io;
 use std::path::PathBuf;
 use std::process::Command;
 use std::vec::Vec;
@@ -109,4 +108,14 @@ pub fn save_qoute() {
     if let Err(e) = writeln!(saved_quotes_file, "{}", quote.quote_str()) {
         eprintln!("Couldn't save quote to file: {}", e);
     }
+}
+
+pub fn record_greeting() -> String {
+    println!("type what you would like your greeting to be! ");
+    let mut greeting = String::new();
+    match stdin().read_line(&mut greeting) {
+        Ok(_greeting) => {},
+        Err(e) => panic!("couldn't capture your greeting, did you type anything? \n{:?}",e),
+    }
+    greeting.trim().to_string()
 }
