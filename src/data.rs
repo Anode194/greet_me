@@ -1,8 +1,12 @@
+use crate::input::*;
 use json::*;
 use std::fs::File;
+use std::fs::OpenOptions;
 use std::io::BufRead;
 use std::io::BufReader;
+use std::io::ErrorKind;
 use std::io::Read;
+use std::io::Write;
 use std::path::PathBuf;
 pub struct TodoData {
     pub urgent: Vec<String>,
@@ -38,7 +42,7 @@ impl Quote {
         }
     }
     pub fn quote_str(&self) -> String {
-        let quote = format!("{} {} ",self.quote, self.author);
+        let quote = format!("{} {} ", self.quote, self.author);
 
         quote
     }
@@ -46,20 +50,36 @@ impl Quote {
 pub struct Greeting {
     pub text: String,
 }
+
 impl Greeting {
     pub fn read() -> Greeting {
         let mut path: PathBuf = dirs::home_dir().unwrap();
         path.push(".config/greet_me/greeting.txt");
-        let mut greeting_file = File::open(path).unwrap();
-        let mut greet = Greeting {
-            text: String::new(),
-        };
-        match greeting_file.read_to_string(&mut greet.text) {
-            Ok(i) => i,
-            Err(e) => panic!("something went wrong reading the file. \n{}", e),
-        };
+        if path.exists() {
+            let mut greeting_file = OpenOptions::new().read(true).open(path).unwrap();
+            let mut greet = Greeting {
+                text: String::new(),
+            };
+            match greeting_file.read_to_string(&mut greet.text) {
+                Ok(i) => i,
+                Err(e) => panic!("something went wrong reading the file. \n{}", e),
+            };
 
-        greet
+            greet
+        } else {
+            let mut greeting_file = OpenOptions::new()
+                .create(true)
+                .write(true)
+                .open(path)
+                .unwrap();
+            let greeting_text = record_greeting();
+            greeting_file.write_all(greeting_text.as_bytes()).expect("failed writing new greeting");
+            let greet = Greeting {
+                text: greeting_text,
+            };
+            greet
+
+        }
     }
 }
 
